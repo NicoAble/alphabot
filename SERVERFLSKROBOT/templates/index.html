@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .puls {
+            margin-top: 10px;
+            margin-bottom: 10px;
+            margin-left: 10px;
+            margin-right: 10px;
+            background-color: blue;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            width: 100px; /* Imposta la larghezza desiderata */
+        }
+
+        h3 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="form1">
+        <form  method="post">
+            <center><input class="puls" type="submit" value="avanti" name="action1"/></center>
+            <center><input class="puls" type="submit" value="sinistra" name="action4"/>
+            <input class="puls" type="submit" value="destra" name="action3"/></center>
+            <center><input class="puls" type="submit" value="indietro" name="action2"/></center>
+            
+            <br>
+            <div>
+                <input type="text" placeholder="comando" name="comando" value="{{
+                    request.form.coamndo }}">
+                <input class="btn btn-default" type="submit" value="Invio">
+            </div>
+        </form></div>
+</body>
+</html>
+

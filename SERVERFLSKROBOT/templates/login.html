@@ -1,0 +1,44 @@
+<html>
+  <head>
+    <title>Flask Intro - login page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" media="screen">
+  <style>
+    body {
+      background-color: black;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+  </style>
+  </head>
+  <body>
+    
+    <div class="container">
+      <div class="container text-center">
+        <img src="static\roborto.png" alt="">
+      </div>
+      <h1 style="color: #75CC20;">PLEASE LOGIN</h1>
+      <br>
+      <form action="" method="post">
+        <div class="mb-3">
+          <label style="color: #75CC20;" for="exampleInputEmail1" class="form-label">User Name</label>
+          <input style="color: #75CC20;" type="text" placeholder="Username" name="username" value="{{
+            request.form.username }}">
+        </div>
+        <div class="mb-3">
+          <label style="color: #75CC20;" for="exampleInputPassword1" class="form-label">Password</label>
+          <input style="color: #75CC20;"type="password" placeholder="Password" name="password" value="{{
+            request.form.password }}">
+        </div>
+        <div class="mb-3 form-check">
+          <input style="margin-bottom: 10px;" class="btn btn-default" type="submit" value="Login">
+        </div>
+      {% if error %}
+        <p style="color: #75CC20;" class="error"><strong>Error:</strong> {{ error }}
+      {% endif %}
+    </div>
+  </body>
+</html>

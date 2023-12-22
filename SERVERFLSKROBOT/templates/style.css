@@ -1,0 +1,32 @@
+body {
+    background-color: black;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+form {
+    display: grid;
+    grid-template-areas:
+        " . sopra . "
+        " sinistra avanti destra "
+        " . sotto . ";
+    gap: 10px;
+    text-align: center;
+}
+
+input {
+    background-color: blue;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    width: 100px; /* Imposta la larghezza desiderata */
+}
+
+h3 {
+    text-align: center;
+}
