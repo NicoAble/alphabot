@@ -2,12 +2,15 @@ import Alphabot
 import time
 import sqlite3
 import hashlib
-from flask import Flask, render_template, redirect, url_for, request
+from flask import Flask, render_template, redirect, url_for, request, make_response
+import string
+import random
 app = Flask(__name__)
+token = ''.join(random.choice(string.ascii_lowercase) for _ in range(random.randint(20, 50)))
 
 def MandaComandi(comando):
     lista_comandi = []
-    con=sqlite3.connect("comandi.db")
+    con=sqlite3.connect("alphabot.db")
     res1=con.execute("SELECT shortcut_name FROM tabellaMovements")
     list=res1.fetchall()
     for i, element in enumerate(list):
@@ -94,7 +97,7 @@ def controllaComando(com, Ab):
 
 def validate(username, password):
     completion = False
-    con = sqlite3.connect('psw_db.db')
+    con = sqlite3.connect('alphabot.db')
     #with sqlite3.connect('static/db.db') as con:
     cur = con.cursor()
     cur.execute("SELECT * FROM UTENTI;")
@@ -110,12 +113,21 @@ def validate(username, password):
         print(hashlib.sha256(password.encode('utf-8')).hexdigest())
         if dbUser==username:
             completion=check_password(dbPass, password)
+    con.close()
     return completion
 
 def check_password(hashed_password, user_password):
     user_password=hashlib.sha256(user_password.encode('utf-8')).hexdigest()
     return hashed_password == user_password
 
+
+def salvaComando(username, comando):
+    con = sqlite3.connect('alphabot.db')
+    #with sqlite3.connect('static/db.db') as con:
+    cur = con.cursor()
+    cur.execute(f"INSERT INTO STORICO(user, comando, data_ora) VALUES ('{username}', '{comando}', CURRENT_TIMESTAMP)")
+    con.commit()
+    con.close()
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
@@ -127,10 +139,14 @@ def login():
         if completion ==False:
             error = 'Invalid Credentials. Please try again.'
         else:
-            return redirect(url_for('index'))
+            #settare il cookie
+            resp = make_response(redirect(url_for('index')))
+            resp.set_cookie('username', username)
+            return resp
     return render_template('login.html', error=error)
+    
 
-@app.route("/secret", methods=['GET', 'POST'])
+@app.route(f"/{token}", methods=['GET', 'POST'])
 def index():
     Ab=Alphabot.AlphaBot() 
     i = 0.7
@@ -143,13 +159,14 @@ def index():
             Ab.forward()
             time.sleep(i)        #durata del movimento
             Ab.stop()
+            comando = 'avanti'
         elif  request.form.get('action2') == 'indietro':
             #print("Bottone2")
             
             Ab.backward()
             time.sleep(i)        #durata del movimento
             Ab.stop()
-            
+            comando = 'indietro'
         elif  request.form.get('action3') == 'destra':
             #print("Bottone3")
             i += 0.35
@@ -157,6 +174,7 @@ def index():
             time.sleep(i)        #durata del movimento
             Ab.stop()
             i = 0.7
+            comando = 'destra'
         elif  request.form.get('action4') == 'sinistra':
             #print("Bottone4")
             i += 0.45
@@ -164,12 +182,18 @@ def index():
             time.sleep(i)        #durata del movimento
             Ab.stop()
             i = 0.7
+            comando = 'sinistra'
         else: 
             controllaComando(comando, Ab)
     elif request.method == 'GET':
         return render_template('index.html')
     
-    return render_template("index.html")
+    user = request.cookies.get('username')
+    salvaComando(user, comando)
+    #settare il cookie
+    resp = make_response(redirect(url_for('index')))
+    resp.set_cookie('username', request.cookies.get('username'))
+    return resp
 
 
 if __name__ == '__main__':
